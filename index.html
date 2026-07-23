@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBIT Technologiez ERP - Complete Billing Solution</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- Root App Container -->
+    <div id="app" class="min-h-screen flex flex-col">
+
+        <!-- ================= AUTHENTICATION VIEW ================= -->
+        <div id="authView" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="inline-flex bg-indigo-100 text-indigo-700 p-3 rounded-xl font-bold text-xl tracking-tight">UBIT Technologiez</div>
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-900">Sign in to your account</h1>
+                    <p class="text-sm text-slate-500">Demo Account — ID: <span class="font-mono font-semibold text-slate-700">1234</span> | PWD: <span class="font-mono font-semibold text-slate-700">1234</span></p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Mobile Number, Email ID or Demo ID</label>
+                        <input type="text" id="loginIdentifier" required placeholder="e.g. 1234 or admin@ubittech.com" 
+                            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" 
+                            class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="otpLoginToggle" onchange="toggleOtpField()" class="rounded text-indigo-600 focus:ring-indigo-500">
+                            <span class="ml-2 text-slate-600">Login with Mobile/Email OTP</span>
+                        </label>
+                        <a href="#" onclick="alert('Password reset link sent to registered communication channels.')" class="text-indigo-600 hover:underline">Forgot password?</a>
+                    </div>
+
+                    <div id="otpContainer" class="hidden">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Enter OTP (Sent via SMS/Email)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="otpInput" maxlength="6" placeholder="123456" class="w-full px-4 py-3 rounded-lg border border-slate-300 tracking-widest font-mono">
+                            <button type="button" onclick="alert('OTP sent successfully!')" class="bg-slate-100 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-200">Send OTP</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition">
+                        Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================= MAIN APP LAYOUT ================= -->
+        <div id="mainApp" class="flex h-screen overflow-hidden hidden">
+            
+            <!-- Sidebar Navigation -->
+            <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex overflow-y-auto">
+                <div>
+                    <div class="p-4 border-b border-slate-800 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-indigo-500 text-slate-900 font-bold p-2 rounded-lg text-sm">UB</div>
+                            <div>
+                                <h2 class="font-bold text-white tracking-wide text-sm">UBIT Technologiez</h2>
+                                <p class="text-xs text-slate-400">Enterprise ERP Panel</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1 uppercase tracking-wider">Active Company</label>
+                            <select id="activeCompanySelect" onchange="switchCompany(this.value)" class="w-full bg-slate-800 text-white text-xs px-2.5 py-2 rounded-lg border border-slate-750 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="Narmadha Trader">Narmadha Trader</option>
+                                <option value="UBIT Global Services">UBIT Global Services</option>
+                                <option value="Retrophile Tech">Retrophile Tech</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Menu -->
+                    <nav class="p-3 space-y-1 text-sm">
+                        <button onclick="switchSection('home')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600 text-white font-medium" data-target="home">
+                            <i data-lucide="home" class="w-4 h-4"></i> Home
+                        </button>
+
+                        <!-- Parties -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('partiesSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="users" class="w-4 h-4"></i> Parties</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="partiesSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('parties-all')" class="block py-1.5 hover:text-white text-slate-400">All Parties</button>
+                                <button onclick="switchSection('parties-add')" class="block py-1.5 hover:text-white text-slate-400">Add Party</button>
+                            </div>
+                        </div>
+
+                        <!-- Items -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('itemsSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="package" class="w-4 h-4"></i> Items</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="itemsSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('items-list')" class="block py-1.5 hover:text-white text-slate-400">Item List / Stock</button>
+                                <button onclick="switchSection('items-low')" class="block py-1.5 hover:text-white text-slate-400">Low Stock Summary</button>
+                                <button onclick="switchSection('items-categories')" class="block py-1.5 hover:text-white text-slate-400">Categories</button>
+                            </div>
+                        </div>
+
+                        <!-- Sale -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('saleSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="file-text" class="w-4 h-4"></i> Sale</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="saleSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('sale-invoice')" class="block py-1.5 hover:text-white text-slate-400">Sale Invoice</button>
+                                <button onclick="switchSection('sale-quotation')" class="block py-1.5 hover:text-white text-slate-400">Estimate / Quotation</button>
+                                <button onclick="switchSection('sale-order')" class="block py-1.5 hover:text-white text-slate-400">Sale Order</button>
+                                <button onclick="switchSection('sale-return')" class="block py-1.5 hover:text-white text-slate-400">Sale Return / Credit Note</button>
+                                <button onclick="switchSection('sale-challan')" class="block py-1.5 hover:text-white text-slate-400">Delivery Challan</button>
+                            </div>
+                        </div>
+
+                        <!-- Purchase & Expense -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('purchaseSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Purchase & Expense</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="purchaseSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('purchase-bills')" class="block py-1.5 hover:text-white text-slate-400">Purchase Bills</button>
+                                <button onclick="switchSection('purchase-orders')" class="block py-1.5 hover:text-white text-slate-400">Purchase Orders</button>
+                                <button onclick="switchSection('purchase-expenses')" class="block py-1.5 hover:text-white text-slate-400">Expenses</button>
+                            </div>
+                        </div>
+
+                        <!-- Cash & Bank -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('cashSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="landmark" class="w-4 h-4"></i> Cash & Bank</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="cashSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('cash-bank')" class="block py-1.5 hover:text-white text-slate-400">Bank Accounts & UPI</button>
+                                <button onclick="switchSection('cash-adjustment')" class="block py-1.5 hover:text-white text-slate-400">Cash Adjustment</button>
+                            </div>
+                        </div>
+
+                        <!-- Accounting -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('accountingSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="book-open" class="w-4 h-4"></i> Accounting</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="accountingSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('acc-journal')" class="block py-1.5 hover:text-white text-slate-400">Journal Entries</button>
+                                <button onclick="switchSection('acc-chart')" class="block py-1.5 hover:text-white text-slate-400">Chart of Accounts</button>
+                                <button onclick="switchSection('acc-statements')" class="block py-1.5 hover:text-white text-slate-400">Account Statements</button>
+                            </div>
+                        </div>
+
+                        <!-- Reports -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('reportsSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> Reports</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="reportsSub" class="pl-6 space-y-2 hidden text-xs pt-1 border-l border-slate-700 ml-4">
+                                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">Transaction Reports</p>
+                                <button onclick="switchSection('rep-sale')" class="block py-1 hover:text-white text-slate-400">Sale</button>
+                                <button onclick="switchSection('rep-purchase')" class="block py-1 hover:text-white text-slate-400">Purchase</button>
+                                <button onclick="switchSection('rep-daybook')" class="block py-1 hover:text-white text-slate-400">Day book</button>
+                                <button onclick="switchSection('rep-alltxn')" class="block py-1 hover:text-white text-slate-400">All Transactions</button>
+                                <button onclick="switchSection('rep-pl')" class="block py-1 hover:text-white text-slate-400">Profit And Loss</button>
+                                <button onclick="switchSection('rep-cashflow')" class="block py-1 hover:text-white text-slate-400">Cash flow</button>
+                                <button onclick="switchSection('rep-balancesheet')" class="block py-1 hover:text-white text-slate-400">Balance Sheet</button>
+
+                                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider pt-2">Party reports</p>
+                                <button onclick="switchSection('rep-partystatement')" class="block py-1 hover:text-white text-slate-400">Party Statement</button>
+                                <button onclick="switchSection('rep-allparties')" class="block py-1 hover:text-white text-slate-400">All parties</button>
+
+                                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider pt-2">GST reports</p>
+                                <button onclick="switchSection('rep-gstr1')" class="block py-1 hover:text-white text-slate-400">GSTR 1</button>
+                                <button onclick="switchSection('rep-gstr2')" class="block py-1 hover:text-white text-slate-400">GSTR 2</button>
+                                <button onclick="switchSection('rep-gstr3b')" class="block py-1 hover:text-white text-slate-400">GSTR 3 B</button>
+                                <button onclick="switchSection('rep-gstr9')" class="block py-1 hover:text-white text-slate-400">GSTR 9</button>
+                                <button onclick="switchSection('rep-hsn')" class="block py-1 hover:text-white text-slate-400">Sale Summary By HSN</button>
+                                <button onclick="switchSection('rep-sac')" class="block py-1 hover:text-white text-slate-400">SAC Report</button>
+                            </div>
+                        </div>
+
+                        <!-- Sync, Share & Backup -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('syncSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Sync, Share & Backup</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="syncSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('sync-activity')" class="block py-1.5 hover:text-white text-slate-400">User Activity Table</button>
+                                <button onclick="switchSection('sync-restore')" class="block py-1.5 hover:text-white text-slate-400">Restore Backup</button>
+                            </div>
+                        </div>
+
+                        <!-- Utilities -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('utilitiesSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="wrench" class="w-4 h-4"></i> Utilities</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="utilitiesSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('util-import')" class="block py-1.5 hover:text-white text-slate-400">Import Items</button>
+                                <button onclick="switchSection('util-barcode')" class="block py-1.5 hover:text-white text-slate-400">Barcode Generator</button>
+                                <button onclick="switchSection('util-bulk')" class="block py-1.5 hover:text-white text-slate-400">Update Items In Bulk</button>
+                                <button onclick="switchSection('util-tallyimport')" class="block py-1.5 hover:text-white text-slate-400">Import From Tally</button>
+                                <button onclick="switchSection('util-parties')" class="block py-1.5 hover:text-white text-slate-400">Import Parties</button>
+                                <button onclick="switchSection('util-verify')" class="block py-1.5 hover:text-white text-slate-400">Verify My Data</button>
+                                <button onclick="switchSection('util-recycle')" class="block py-1.5 hover:text-white text-slate-400">Recycle Bin</button>
+                            </div>
+                        </div>
+
+                        <!-- Settings -->
+                        <div class="space-y-1">
+                            <button onclick="toggleSubmenu('settingsSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
+                                <span class="flex items-center gap-3"><i data-lucide="settings" class="w-4 h-4"></i> Settings</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div id="settingsSub" class="pl-9 space-y-1 hidden text-xs">
+                                <button onclick="switchSection('set-general')" class="block py-1.5 hover:text-white text-slate-400">General Settings</button>
+                                <button onclick="switchSection('set-transaction')" class="block py-1.5 hover:text-white text-slate-400">Transaction & Prefixes</button>
+                                <button onclick="switchSection('set-print')" class="block py-1.5 hover:text-white text-slate-400">Print & Thermal Layouts</button>
+                                <button onclick="switchSection('set-gst')" class="block py-1.5 hover:text-white text-slate-400">Taxes & GST</button>
+                                <button onclick="switchSection('set-item')" class="block py-1.5 hover:text-white text-slate-400">Item Fields & Batch</button>
+                            </div>
+                        </div>
+
+                    </nav>
+                </div>
+                <div class="p-3 border-t border-slate-800 text-xs flex items-center justify-between">
+                    <div>
+                        <span id="currentUserDisplay" class="font-semibold block text-white">Demo User (1234)</span>
+                        <span class="text-slate-500 text-[10px]">Isolated Sandbox Data</span>
+                    </div>
+                    <button onclick="location.reload()" class="text-rose-400 hover:text-rose-300 font-medium">Logout</button>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="flex-1 flex flex-col overflow-y-auto">
+                <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+                    <div class="flex items-center gap-4">
+                        <h2 id="sectionTitle" class="text-xl font-bold text-slate-800">Home Dashboard</h2>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> G-Drive Auto-Sync Active
+                        </span>
+                        <div class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">UB</div>
+                    </div>
+                </header>
+
+                <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+
+                    <!-- HOME -->
+                    <section id="sec-home" class="app-section space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <p class="text-sm font-medium text-slate-500">Total Sales Today</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">₹ 42,580.00</h3>
+                                <span class="text-xs text-indigo-600 font-medium mt-2 inline-block">Active company synced</span>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <p class="text-sm font-medium text-slate-500">Pending Invoices</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">₹ 14,200.00</h3>
+                                <span class="text-xs text-amber-600 font-medium mt-2 inline-block">3 invoices awaiting payment</span>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <p class="text-sm font-medium text-slate-500">GST Liability</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">₹ 6,840.50</h3>
+                                <span class="text-xs text-slate-500 mt-2 inline-block">GSTR-3B ready</span>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <p class="text-sm font-medium text-slate-500">Google Drive Backup</p>
+                                <h3 class="text-2xl font-bold text-indigo-600 mt-1">Synced</h3>
+                                <span class="text-xs text-slate-500 mt-2 inline-block">Daily auto-backup active</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-800 mb-4">Quick Operations</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <button onclick="switchSection('sale-invoice')" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center gap-2">
+                                    <i data-lucide="plus" class="w-4 h-4"></i> Create Sale Invoice
+                                </button>
+                                <button onclick="switchSection('parties-add')" class="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-200 transition flex items-center gap-2">
+                                    <i data-lucide="user-plus" class="w-4 h-4"></i> Add New Party
+                                </button>
+                                <button onclick="switchSection('rep-gstr3b')" class="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-200 transition flex items-center gap-2">
+                                    <i data-lucide="download" class="w-4 h-4"></i> Download GSTR Reports
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- PARTIES -->
+                    <section id="sec-parties-all" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <div class="flex justify-between items-center border-b pb-4">
+                                <h3 class="text-lg font-bold text-slate-800">All Parties / Customers</h3>
+                                <button onclick="switchSection('parties-add')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium">+ Add Party</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-100 text-slate-700">
+                                        <tr><th class="p-3">Party Name</th><th class="p-3">Phone Number</th><th class="p-3">GSTIN</th><th class="p-3 text-right">Balance</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        <tr><td class="p-3 font-medium">Classic Enterprises</td><td class="p-3">9363022560</td><td class="p-3 font-mono text-xs">33AAAWF2551K1ZV</td><td class="p-3 text-right text-emerald-600 font-semibold">₹ 590.00</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="sec-parties-add" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6 max-w-2xl">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Add New Party</h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Party Name</label><input type="text" placeholder="Enter party name" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label><input type="text" placeholder="9363022560" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                                    <div><label class="block text-sm font-medium text-slate-700 mb-1">GSTIN</label><input type="text" placeholder="33AAAAA0000A1Z5" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                                </div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Billing Address</label><textarea rows="3" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Address, City, State - Pincode"></textarea></div>
+                            </div>
+                            <div class="flex justify-end"><button onclick="alert('Party saved successfully!')" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700">Save Party</button></div>
+                        </div>
+                    </section>
+
+                    <!-- ITEMS -->
+                    <section id="sec-items-list" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <div class="flex justify-between items-center border-b pb-4">
+                                <h3 class="text-lg font-bold text-slate-800">Item List & Stock Management</h3>
+                                <button onclick="alert('Item added!')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium">+ Add Item</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-100 text-slate-700">
+                                        <tr><th class="p-3">Item Name</th><th class="p-3">HSN/SAC</th><th class="p-3">Price (₹)</th><th class="p-3">Stock</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        <tr><td class="p-3 font-medium">Networking Switch 24-Port</td><td class="p-3 font-mono text-xs">8517</td><td class="p-3">₹ 15,000.00</td><td class="p-3 text-emerald-600 font-semibold">12 Units</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="sec-items-low" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Low Stock Summary</h3>
+                            <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-sm">All inventory items are currently above safety threshold levels.</div>
+                        </div>
+                    </section>
+
+                    <section id="sec-items-categories" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Item Categories</h3>
+                            <div class="flex gap-3"><input type="text" placeholder="Category Name" class="px-3 py-2 border rounded-lg text-sm"><button onclick="alert('Category created!')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm">Add Category</button></div>
+                        </div>
+                    </section>
+
+                    <!-- SALE -->
+                    <section id="sec-sale-invoice" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+                            <div class="flex justify-between items-center border-b pb-4">
+                                <div><h3 class="text-lg font-bold text-slate-800">GST Tax Invoice Generator</h3><p class="text-sm text-slate-500">Includes Bank Account Details & UPI QR Code</p></div>
+                                <div class="flex gap-3"><span class="text-sm font-medium text-slate-600 self-center">Txn No:</span><input type="text" value="UBIT/26-27/001" class="px-3 py-1.5 border rounded-lg text-sm font-mono w-40"></div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Customer / Party Name</label><input type="text" value="Classic Enterprises" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Customer GSTIN</label><input type="text" value="33AAAAA0000A1Z5" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                                <div><label class="block text-sm font-medium text-slate-700 mb-1">Payment Mode</label><select class="w-full px-3 py-2 border rounded-lg text-sm"><option>Bank Transfer / UPI QR</option><option>Cash in Hand</option><option>Cheque</option></select></div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-100 text-slate-700">
+                                        <tr><th class="p-3">Item & Description Entry</th><th class="p-3 w-24">Qty</th><th class="p-3 w-32">Price (₹)</th><th class="p-3 w-24">GST %</th><th class="p-3 w-32 text-right">Total (₹)</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        <tr>
+                                            <td class="p-3"><input type="text" value="Networking Switch 24-Port" class="w-full px-2 py-1 border rounded text-sm mb-1"><input type="text" value="HSN: 8517 | Batch #04" class="w-full px-2 py-1 border rounded text-xs text-slate-500"></td>
+                                            <td class="p-3"><input type="number" value="1" class="w-full px-2 py-1 border rounded text-sm"></td>
+                                            <td class="p-3"><input type="number" value="15000" class="w-full px-2 py-1 border rounded text-sm"></td>
+                                            <td class="p-3"><select class="w-full px-2 py-1 border rounded text-sm"><option selected>18%</option></select></td>
+                                            <td class="p-3 text-right font-medium">₹ 17,700.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="flex justify-between items-center pt-4 border-t">
+                                <span class="text-sm text-indigo-600 font-semibold cursor-pointer">+ Add Line Item</span>
+                                <div class="text-right"><p class="text-sm text-slate-500">Grand Total (Incl. Bank & QR): <span class="text-xl font-bold text-slate-900">₹ 17,700.00</span></p></div>
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4"><button onclick="alert('Invoice printed with Bank Details and UPI QR Code successfully!')" class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">Save & Print Invoice</button></div>
+                        </div>
+                    </section>
+
+                    <section id="sec-sale-quotation" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Estimate / Quotation</h3><p class="text-sm text-slate-500">Create professional quotations for prospective buyers.</p></div></section>
+                    <section id="sec-sale-order" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Sale Orders</h3><p class="text-sm text-slate-500">Manage advance customer orders and fulfillment milestones.</p></div></section>
+                    <section id="sec-sale-return" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Sale Return / Credit Note</h3><p class="text-sm text-slate-500">Process merchandise returns and issue credit adjustments.</p></div></section>
+                    <section id="sec-sale-challan" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Delivery Challan</h3><p class="text-sm text-slate-500">Generate transit challans for goods dispatched.</p></div></section>
+
+                    <!-- PURCHASE & EXPENSE -->
+                    <section id="sec-purchase-bills" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Purchase Bills</h3><p class="text-sm text-slate-500">Record vendor bills and manage Input Tax Credit (ITC).</p></div></section>
+                    <section id="sec-purchase-orders" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Purchase Orders</h3><p class="text-sm text-slate-500">Issue and track purchase orders sent to suppliers.</p></div></section>
+                    <section id="sec-purchase-expenses" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Business Expenses</h3><p class="text-sm text-slate-500">Log operational expenses, rent, utilities, and vendor payouts.</p></div></section>
+
+                    <!-- CASH & BANK -->
+                    <section id="sec-cash-bank" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Bank Accounts & UPI Setup</h3>
+                            <div class="grid grid-cols-2 gap-4 max-w-xl">
+                                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Bank Name & A/C Details</label><textarea rows="3" class="w-full p-2 border rounded text-sm">International Corporate Bank\nA/C: 998877665544\nIFSC: ICBK0009999</textarea></div>
+                                <div><label class="block text-xs font-semibold text-slate-600 mb-1">UPI ID for Invoice QR</label><input type="text" value="ubittech@icici" class="w-full p-2 border rounded text-sm mb-2"></div>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="sec-cash-adjustment" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Cash Adjustment</h3><p class="text-sm text-slate-500">Reconcile cash drawer balances.</p></div></section>
+
+                    <!-- ACCOUNTING -->
+                    <section id="sec-acc-journal" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Journal Entries</h3><p class="text-sm text-slate-500">Manage double-entry bookkeeping journal records.</p></div></section>
+                    <section id="sec-acc-chart" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Chart of Accounts</h3><p class="text-sm text-slate-500">View complete ledger classification trees.</p></div></section>
+                    <section id="sec-acc-statements" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Account Statements</h3><p class="text-sm text-slate-500">Pull detailed statements for any ledger account.</p></div></section>
+
+                    <!-- REPORTS -->
+                    <section id="sec-rep-sale" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Transaction Report: Sale</h3><p class="text-sm text-slate-500">Detailed itemized sales ledger.</p></div></section>
+                    <section id="sec-rep-purchase" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Transaction Report: Purchase</h3><p class="text-sm text-slate-500">Detailed purchase ledger.</p></div></section>
+                    <section id="sec-rep-daybook" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Day Book</h3><p class="text-sm text-slate-500">Chronological daily transaction summary.</p></div></section>
+                    <section id="sec-rep-alltxn" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">All Transactions</h3><p class="text-sm text-slate-500">Master audit ledger of all entries.</p></div></section>
+                    <section id="sec-rep-pl" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Profit And Loss Statement</h3><p class="text-sm text-slate-500">Real-time financial performance statement.</p></div></section>
+                    <section id="sec-rep-cashflow" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Cash flow</h3><p class="text-sm text-slate-500">Inflow and outflow liquidity monitoring.</p></div></section>
+                    <section id="sec-rep-balancesheet" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Balance Sheet</h3><p class="text-sm text-slate-500">Assets and liabilities financial summary.</p></div></section>
+                    <section id="sec-rep-partystatement" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Party Statement</h3><p class="text-sm text-slate-500">Customer and vendor account balances.</p></div></section>
+                    <section id="sec-rep-allparties" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">All parties</h3><p class="text-sm text-slate-500">Complete directory of party receivables.</p></div></section>
+                    <section id="sec-rep-gstr1" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">GSTR 1 Report</h3><button onclick="alert('GSTR-1 JSON downloaded.')" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">Download GSTR-1 JSON</button></div></section>
+                    <section id="sec-rep-gstr2" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">GSTR 2 Report</h3><p class="text-sm text-slate-500">Inward supplies tax credit summary.</p></div></section>
+                    <section id="sec-rep-gstr3b" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">GSTR 3 B Summary</h3><p class="text-sm text-slate-500">Monthly summary return statement.</p></div></section>
+                    <section id="sec-rep-gstr9" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">GSTR 9 Annual Return</h3><p class="text-sm text-slate-500">Annual GST filing compilation.</p></div></section>
+                    <section id="sec-rep-hsn" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Sale Summary By HSN</h3><p class="text-sm text-slate-500">HSN code breakdown report.</p></div></section>
+                    <section id="sec-rep-sac" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">SAC Report</h3><p class="text-sm text-slate-500">Service Accounting Code report.</p></div></section>
+
+                    <!-- SYNC & BACKUP -->
+                    <section id="sec-sync-activity" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">User Activity Table</h3>
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-100 text-slate-700"><tr><th class="p-3">Full Name</th><th class="p-3">Date & Time</th><th class="p-3">Role</th><th class="p-3">Action</th></tr></thead>
+                                <tbody class="divide-y divide-slate-200 text-xs">
+                                    <tr><td class="p-3 font-medium">Demo User (1234)</td><td class="p-3">23 Jul 2026, 1:00 PM</td><td class="p-3">Primary Admin</td><td class="p-3 text-indigo-600 font-semibold">CREATED SALE INVOICE</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section id="sec-sync-restore" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Restore Backup & Google Drive</h3>
+                            <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center justify-between">
+                                <div><h4 class="font-bold text-indigo-950 text-sm">Automated Google Drive Sync Active</h4><p class="text-xs text-indigo-700">Daily database backups are synced automatically.</p></div>
+                                <button onclick="alert('Backup restored successfully!')" class="bg-indigo-600 text-white px-4 py-2 rounded text-xs font-semibold">Restore Now</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- UTILITIES -->
+                    <section id="sec-util-import" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Import Items</h3><input type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700"></div></section>
+                    <section id="sec-util-barcode" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Barcode Generator</h3><p class="text-sm text-slate-500">Generate item barcodes.</p></div></section>
+                    <section id="sec-util-bulk" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Update Items In Bulk</h3><p class="text-sm text-slate-500">Batch update inventory data.</p></div></section>
+                    <section id="sec-util-tallyimport" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Import From Tally</h3><p class="text-sm text-slate-500">Migrate Tally ledgers.</p></div></section>
+                    <section id="sec-util-parties" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Import Parties</h3><p class="text-sm text-slate-500">Upload CSV party lists.</p></div></section>
+                    <section id="sec-util-verify" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Verify My Data</h3><p class="text-sm text-slate-500">Run ledger integrity check.</p></div></section>
+                    <section id="sec-util-recycle" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Recycle Bin</h3><p class="text-sm text-slate-500">Restore deleted records.</p></div></section>
+
+                    <!-- SETTINGS WITH INVOICE DESIGN CUSTOMIZATION -->
+                    <section id="sec-set-general" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">General Business Settings</h3>
+                            <div class="grid grid-cols-2 gap-4 max-w-xl">
+                                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Company Name</label><input type="text" id="settingBusinessName" value="Narmadha Trader" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="block text-xs font-semibold text-slate-600 mb-1">GSTIN</label><input type="text" id="settingGstin" value="33AAWFN2551K1ZV" class="w-full p-2 border rounded text-sm"></div>
+                            </div>
+                            <button onclick="alert('Settings saved!')" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-semibold">Save Changes</button>
+                        </div>
+                    </section>
+
+                    <section id="sec-set-transaction" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Transaction Prefixes & Custom Numbering</h3>
+                            <div class="grid grid-cols-2 gap-4 max-w-xl">
+                                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Sale Invoice Prefix</label><input type="text" value="UBIT/26-27/" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Purchase Bill Prefix</label><input type="text" value="PUR/26-27/" class="w-full p-2 border rounded text-sm"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- CUSTOMIZE INVOICE PRINT & DESIGN -->
+                    <section id="sec-set-print" class="app-section hidden space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Customize Invoice Print & Design Layouts</h3>
+                            <p class="text-sm text-slate-500">Configure how your GST invoice layouts, themes, bank details, and UPI QR codes render when printed or shared.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="border-2 border-indigo-600 p-4 rounded-xl cursor-pointer bg-indigo-50/50">
+                                    <h4 class="font-bold text-slate-900 text-sm">GST Classic Theme 1</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Standard structured table with formal tax itemization columns.</p>
+                                    <span class="text-xs text-indigo-600 font-semibold mt-3 inline-block">Active Layout</span>
+                                </div>
+                                <div class="border border-slate-200 p-4 rounded-xl cursor-pointer hover:border-slate-400">
+                                    <h4 class="font-bold text-slate-900 text-sm">Modern Minimal Theme 2</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Clean white layout optimized for thermal and A4 printers.</p>
+                                    <span class="text-xs text-slate-500 font-semibold mt-3 inline-block">Select Theme</span>
+                                </div>
+                                <div class="border border-slate-200 p-4 rounded-xl cursor-pointer hover:border-slate-400">
+                                    <h4 class="font-bold text-slate-900 text-sm">Compact POS Theme 3</h4>
+                                    <p class="text-xs text-slate-500 mt-1">Condensed receipt style with prominent UPI QR display.</p>
+                                    <span class="text-xs text-slate-500 font-semibold mt-3 inline-block">Select Theme</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 max-w-xl pt-2">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Invoice Header Notes / Terms</label>
+                                    <textarea rows="2" class="w-full p-2 border rounded text-sm">Thanks for doing business with us!</textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Print Elements Toggle</label>
+                                    <div class="space-y-1.5 text-xs pt-1">
+                                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded text-indigo-600"> Print Bank Details on Invoice</label>
+                                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded text-indigo-600"> Generate & Print UPI QR Code</label>
+                                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded text-indigo-600"> Print Digital Signature</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end"><button onclick="alert('Invoice print design settings saved successfully!')" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700">Save Print Design</button></div>
+                        </div>
+                    </section>
+
+                    <section id="sec-set-gst" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Taxes & GST Configuration</h3><p class="text-sm text-slate-500">Manage default tax slabs.</p></div></section>
+                    <section id="sec-set-item" class="app-section hidden space-y-6"><div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4"><h3 class="text-lg font-bold text-slate-800 border-b pb-4">Item Fields & Batch Settings</h3><p class="text-sm text-slate-500">Configure batch tracking & serial numbers.</p></div></section>
+
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Script Interactions -->
+    <script>
+        lucide.createIcons();
+
+        function toggleOtpField() {
+            const container = document.getElementById('otpContainer');
+            const toggle = document.getElementById('otpLoginToggle');
+            if (toggle.checked) container.classList.remove('hidden');
+            else container.classList.add('hidden');
+        }
+
+        function toggleSubmenu(id) {
+            const sub = document.getElementById(id);
+            if (sub) sub.classList.toggle('hidden');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if ((identifier === '1234' || identifier.includes('demo')) && password === '1234') {
+                document.getElementById('currentUserDisplay').innerText = `Demo User (${identifier})`;
+            } else {
+                document.getElementById('currentUserDisplay').innerText = `User (${identifier})`;
+            }
+            document.getElementById('authView').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+        }
+
+        function switchCompany(companyName) {
+            document.getElementById('activeCompanySelect').value = companyName;
+            document.getElementById('settingBusinessName').value = companyName;
+            alert(`Switched active workspace to: ${companyName} (Data isolated securely)`);
+        }
+
+        function switchSection(targetId) {
+            document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById(`sec-${targetId}`);
+            if (target) target.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'font-medium');
+                if (btn.getAttribute('data-target') === targetId) {
+                    btn.classList.add('bg-indigo-600', 'text-white', 'font-medium');
+                }
+            });
+
+            const titleMap = {
+                'home': 'Home Dashboard',
+                'parties-all': 'All Parties / Customers',
+                'parties-add': 'Add New Party',
+                'items-list': 'Item List & Stock Management',
+                'items-low': 'Low Stock Summary',
+                'items-categories': 'Item Categories',
+                'sale-invoice': 'Sale Invoice (GST)',
+                'sale-quotation': 'Estimate / Quotation',
+                'sale-order': 'Sale Orders',
+                'sale-return': 'Sale Return / Credit Note',
+                'sale-challan': 'Delivery Challan',
+                'purchase-bills': 'Purchase Bills',
+                'purchase-orders': 'Purchase Orders',
+                'purchase-expenses': 'Business Expenses',
+                'cash-bank': 'Bank Accounts & UPI Settings',
+                'cash-adjustment': 'Cash Adjustment',
+                'acc-journal': 'Journal Entries',
+                'acc-chart': 'Chart of Accounts',
+                'acc-statements': 'Account Statements',
+                'rep-sale': 'Transaction Report: Sale',
+                'rep-purchase': 'Transaction Report: Purchase',
+                'rep-daybook': 'Day Book',
+                'rep-alltxn': 'All Transactions',
+                'rep-pl': 'Profit And Loss Statement',
+                'rep-cashflow': 'Cash Flow Report',
+                'rep-balancesheet': 'Balance Sheet',
+                'rep-partystatement': 'Party Statement',
+                'rep-allparties': 'All Parties Summary',
+                'rep-gstr1': 'GSTR 1 Report',
+                'rep-gstr2': 'GSTR 2 Report',
+                'rep-gstr3b': 'GSTR 3 B Summary',
+                'rep-gstr9': 'GSTR 9 Annual Return',
+                'rep-hsn': 'Sale Summary By HSN',
+                'rep-sac': 'SAC Report',
+                'sync-activity': 'User Activity Table',
+                'sync-restore': 'Restore Backup & G-Drive',
+                'util-import': 'Import Items',
+                'util-barcode': 'Barcode Generator',
+                'util-bulk': 'Update Items In Bulk',
+                'util-tallyimport': 'Import From Tally',
+                'util-parties': 'Import Parties',
+                'util-verify': 'Verify My Data',
+                'util-recycle': 'Recycle Bin',
+                'set-general': 'General Business Settings',
+                'set-transaction': 'Transaction Prefixes',
+                'set-print': 'Print & Thermal Layouts Customizer',
+                'set-gst': 'Taxes & GST Configuration',
+                'set-item': 'Item Fields & Batch Settings'
+            };
+            document.getElementById('sectionTitle').innerText = titleMap[targetId] || 'Dashboard Panel';
+        }
+    </script>
+</body>
+</html>
