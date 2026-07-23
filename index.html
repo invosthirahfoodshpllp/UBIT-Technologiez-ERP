@@ -13,7 +13,7 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body id="appBody" class="bg-slate-50 text-slate-800 antialiased">
 
     <!-- Root App Container -->
     <div id="app" class="min-h-screen flex flex-col">
@@ -22,7 +22,7 @@
         <div id="authView" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
                 <div class="text-center space-y-2">
-                    <div class="inline-flex bg-indigo-100 text-indigo-700 p-3 rounded-xl font-bold text-xl tracking-tight">UBIT Technologiez</div>
+                    <div id="authLogoBox" class="inline-flex bg-indigo-100 text-indigo-700 p-3 rounded-xl font-bold text-xl tracking-tight">UBIT Technologiez</div>
                     <h1 class="text-2xl font-bold tracking-tight text-slate-900">Sign in to your account</h1>
                     <p class="text-sm text-slate-500">Demo Account — ID: <span class="font-mono font-semibold text-slate-700">1234</span> | PWD: <span class="font-mono font-semibold text-slate-700">1234</span></p>
                 </div>
@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition">
+                    <button type="submit" id="loginBtn" class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition">
                         Sign In
                     </button>
                 </form>
@@ -65,12 +65,12 @@
         <!-- ================= MAIN APP LAYOUT ================= -->
         <div id="mainApp" class="flex h-screen overflow-hidden hidden">
             
-            <!-- Sidebar Navigation containing ALL complete menus & submenus -->
-            <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex overflow-y-auto">
+            <!-- Sidebar Navigation with dynamic theme classes -->
+            <aside id="sidebarTheme" class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex overflow-y-auto transition-colors duration-300">
                 <div>
                     <div class="p-4 border-b border-slate-800 space-y-3">
                         <div class="flex items-center gap-3">
-                            <div class="bg-indigo-500 text-slate-900 font-bold p-2 rounded-lg text-sm">UB</div>
+                            <div id="sidebarLogo" class="bg-indigo-500 text-slate-900 font-bold p-2 rounded-lg text-sm">UB</div>
                             <div>
                                 <h2 class="font-bold text-white tracking-wide text-sm">UBIT Technologiez</h2>
                                 <p class="text-xs text-slate-400">Enterprise ERP Panel</p>
@@ -116,7 +116,7 @@
                             </div>
                         </div>
 
-                        <!-- Sale -->
+                        <!-- Sale (Cleaned menu name without saved bill mention) -->
                         <div class="space-y-1">
                             <button onclick="toggleSubmenu('saleSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
                                 <span class="flex items-center gap-3"><i data-lucide="file-text" class="w-4 h-4"></i> Sale</span>
@@ -131,14 +131,14 @@
                             </div>
                         </div>
 
-                        <!-- Purchase & Expense -->
+                        <!-- Purchase & Expense (Cleaned menu name without saved bill mention) -->
                         <div class="space-y-1">
                             <button onclick="toggleSubmenu('purchaseSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
                                 <span class="flex items-center gap-3"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Purchase & Expense</span>
                                 <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
                             </button>
                             <div id="purchaseSub" class="pl-9 space-y-1 hidden text-xs">
-                                <button onclick="switchSection('purchase-bills')" class="block py-1.5 hover:text-white text-slate-400">Purchase Bills & Payment</button>
+                                <button onclick="switchSection('purchase-bills')" class="block py-1.5 hover:text-white text-slate-400">Purchase Bills</button>
                                 <button onclick="switchSection('purchase-orders')" class="block py-1.5 hover:text-white text-slate-400">Purchase Orders</button>
                                 <button onclick="switchSection('purchase-expenses')" class="block py-1.5 hover:text-white text-slate-400">Expenses</button>
                             </div>
@@ -176,30 +176,15 @@
                                 <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
                             </button>
                             <div id="reportsSub" class="pl-6 space-y-2 hidden text-xs pt-1 border-l border-slate-700 ml-4">
-                                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">Transaction Reports</p>
-                                <button onclick="switchSection('sale-invoice')" class="block py-1 hover:text-white text-slate-400">Sale</button>
-                                <button onclick="switchSection('purchase-bills')" class="block py-1 hover:text-white text-slate-400">Purchase</button>
+                                <button onclick="switchSection('sale-invoice')" class="block py-1 hover:text-white text-slate-400">Sale Reports</button>
+                                <button onclick="switchSection('purchase-bills')" class="block py-1 hover:text-white text-slate-400">Purchase Reports</button>
                                 <button onclick="switchSection('rep-daybook')" class="block py-1 hover:text-white text-slate-400">Day book</button>
-                                <button onclick="switchSection('rep-alltxn')" class="block py-1 hover:text-white text-slate-400">All Transactions</button>
                                 <button onclick="switchSection('rep-pl')" class="block py-1 hover:text-white text-slate-400">Profit And Loss</button>
-                                <button onclick="switchSection('rep-cashflow')" class="block py-1 hover:text-white text-slate-400">Cash flow</button>
-                                <button onclick="switchSection('rep-balancesheet')" class="block py-1 hover:text-white text-slate-400">Balance Sheet</button>
-
-                                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider pt-2">Party reports</p>
-                                <button onclick="switchSection('rep-partystatement')" class="block py-1 hover:text-white text-slate-400">Party Statement</button>
-                                <button onclick="switchSection('rep-allparties')" class="block py-1 hover:text-white text-slate-400">All parties</button>
-
-                                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider pt-2">GST reports</p>
-                                <button onclick="switchSection('rep-gstr1')" class="block py-1 hover:text-white text-slate-400">GSTR 1</button>
-                                <button onclick="switchSection('rep-gstr2')" class="block py-1 hover:text-white text-slate-400">GSTR 2</button>
                                 <button onclick="switchSection('rep-gstr3b')" class="block py-1 hover:text-white text-slate-400">GSTR 3 B</button>
-                                <button onclick="switchSection('rep-gstr9')" class="block py-1 hover:text-white text-slate-400">GSTR 9</button>
-                                <button onclick="switchSection('rep-hsn')" class="block py-1 hover:text-white text-slate-400">Sale Summary By HSN</button>
-                                <button onclick="switchSection('rep-sac')" class="block py-1 hover:text-white text-slate-400">SAC Report</button>
                             </div>
                         </div>
 
-                        <!-- Sync, Share & Backup -->
+                        <!-- Sync & Backup -->
                         <div class="space-y-1">
                             <button onclick="toggleSubmenu('syncSub')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300">
                                 <span class="flex items-center gap-3"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Sync, Share & Backup</span>
@@ -220,10 +205,6 @@
                             <div id="utilitiesSub" class="pl-9 space-y-1 hidden text-xs">
                                 <button onclick="switchSection('util-import')" class="block py-1.5 hover:text-white text-slate-400">Import Items</button>
                                 <button onclick="switchSection('util-barcode')" class="block py-1.5 hover:text-white text-slate-400">Barcode Generator</button>
-                                <button onclick="switchSection('util-bulk')" class="block py-1.5 hover:text-white text-slate-400">Update Items In Bulk</button>
-                                <button onclick="switchSection('util-tallyimport')" class="block py-1.5 hover:text-white text-slate-400">Import From Tally</button>
-                                <button onclick="switchSection('util-parties')" class="block py-1.5 hover:text-white text-slate-400">Import Parties</button>
-                                <button onclick="switchSection('util-verify')" class="block py-1.5 hover:text-white text-slate-400">Verify My Data</button>
                                 <button onclick="switchSection('util-recycle')" class="block py-1.5 hover:text-white text-slate-400">Recycle Bin</button>
                             </div>
                         </div>
@@ -235,11 +216,9 @@
                                 <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
                             </button>
                             <div id="settingsSub" class="pl-9 space-y-1 text-xs">
-                                <button onclick="switchSection('set-print')" class="block py-1.5 hover:text-white text-indigo-400 font-medium">Print & Invoice Design</button>
+                                <button onclick="switchSection('set-theme')" class="block py-1.5 hover:text-white text-indigo-400 font-medium">Software Color Theme</button>
+                                <button onclick="switchSection('set-print')" class="block py-1.5 hover:text-white text-slate-400">Print & Invoice Design</button>
                                 <button onclick="switchSection('set-general')" class="block py-1.5 hover:text-white text-slate-400">General Settings</button>
-                                <button onclick="switchSection('set-transaction')" class="block py-1.5 hover:text-white text-slate-400">Transaction & Prefixes</button>
-                                <button onclick="switchSection('set-gst')" class="block py-1.5 hover:text-white text-slate-400">Taxes & GST</button>
-                                <button onclick="switchSection('set-item')" class="block py-1.5 hover:text-white text-slate-400">Item Fields & Batch</button>
                             </div>
                         </div>
                     </nav>
@@ -260,10 +239,10 @@
                         <h2 id="sectionTitle" class="text-xl font-bold text-slate-800">Sale Invoices</h2>
                     </div>
                     <div class="flex items-center gap-4">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
-                            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> G-Drive Auto-Sync Active
+                        <span id="syncBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                            <span id="syncDot" class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> G-Drive Auto-Sync Active
                         </span>
-                        <div class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">UB</div>
+                        <div id="headerAvatar" class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">UB</div>
                     </div>
                 </header>
 
@@ -289,64 +268,39 @@
                             </div>
                             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                                 <p class="text-sm font-medium text-slate-500">Google Drive Backup</p>
-                                <h3 class="text-2xl font-bold text-indigo-600 mt-1">Synced</h3>
+                                <h3 class="text-2xl font-bold text-indigo-600 mt-1" id="dashBackupStatus">Synced</h3>
                                 <span class="text-xs text-slate-500 mt-2 inline-block">Daily auto-backup active</span>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-800 mb-4">Quick Navigation</h3>
-                            <div class="flex flex-wrap gap-4">
-                                <button onclick="switchSection('sale-invoice')" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center gap-2">
-                                    <i data-lucide="file-text" class="w-4 h-4"></i> Open Sale Invoices Panel
-                                </button>
-                                <button onclick="switchSection('purchase-bills')" class="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-lg font-medium hover:bg-slate-200 transition flex items-center gap-2">
-                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i> Open Purchase Bills & Payments
-                                </button>
                             </div>
                         </div>
                     </section>
 
-                    <!-- ================= SALE INVOICES EXACT SCREENSHOT MATCH SECTION ================= -->
+                    <!-- ================= SALE INVOICES ================= -->
                     <section id="sec-sale-invoice" class="app-section space-y-6">
                         
-                        <!-- Top Filter Bar matching screenshot -->
+                        <!-- Top Filter Bar with Calendar Option -->
                         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
                             <div class="flex flex-wrap items-center gap-3 text-sm">
-                                <span class="font-semibold text-slate-700">Filter by :</span>
-                                <select class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium">
-                                    <option>This Month</option>
-                                    <option>Last Month</option>
-                                    <option>Custom Date</option>
-                                </select>
-                                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs">
+                                <span class="font-semibold text-slate-700">Filter by Date (Calendar):</span>
+                                <div class="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs">
                                     <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-500"></i>
-                                    <span>01/07/2026 To 31/07/2026</span>
+                                    <input type="date" id="saleFromDate" value="2026-07-01" class="bg-transparent text-xs outline-none font-medium">
+                                    <span>To</span>
+                                    <input type="date" id="saleToDate" value="2026-07-31" class="bg-transparent text-xs outline-none font-medium">
                                 </div>
-                                <select class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium">
-                                    <option>All Firms</option>
-                                    <option>Narmadha Trader</option>
-                                </select>
-                                <select class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-medium">
-                                    <option>All Users</option>
-                                    <option>Primary Admin</option>
-                                </select>
+                                <button onclick="alert('Filtered sale invoices by selected date range!')" class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-semibold">Apply Date</button>
                             </div>
-                            <button onclick="openNewInvoiceModal()" class="bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-rose-700 transition flex items-center gap-2 shadow-sm">
-                                <i data-lucide="plus" class="w-4 h-4"></i> Add Sale
+                            <button onclick="openNewInvoiceModal()" id="primaryActionBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Add Sale Invoice
                             </button>
                         </div>
 
-                        <!-- Summary Card matching screenshot -->
+                        <!-- Summary Card -->
                         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm max-w-md space-y-2">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Sales Amount</p>
                                     <h3 class="text-2xl font-bold text-slate-900 mt-0.5">₹ 11,65,248.00</h3>
                                 </div>
-                                <span class="px-2 py-1 bg-rose-50 text-rose-600 rounded text-xs font-bold flex items-center gap-1">
-                                    31.28% ↘ <span class="text-[10px] font-normal text-slate-500">vs last month</span>
-                                </span>
                             </div>
                             <div class="pt-2 border-t border-slate-100 flex justify-between text-xs font-medium text-slate-600">
                                 <span>Received: <strong class="text-slate-900">₹ 8,61,246.00</strong></span>
@@ -354,74 +308,37 @@
                             </div>
                         </div>
 
-                        <!-- Transactions Table matching screenshot -->
+                        <!-- Sale Invoices Table -->
                         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-                                <h3 class="font-bold text-slate-800 text-sm">Transactions</h3>
-                                <div class="flex items-center gap-3 text-slate-500">
-                                    <i data-lucide="search" class="w-4 h-4 cursor-pointer hover:text-slate-800"></i>
-                                    <i data-lucide="bar-chart" class="w-4 h-4 cursor-pointer hover:text-slate-800"></i>
-                                    <i data-lucide="file-spreadsheet" class="w-4 h-4 cursor-pointer hover:text-slate-800"></i>
-                                    <i data-lucide="printer" class="w-4 h-4 cursor-pointer hover:text-slate-800" onclick="window.print()"></i>
-                                </div>
+                                <h3 class="font-bold text-slate-800 text-sm">Sale Invoices</h3>
                             </div>
-                            
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-xs border-collapse">
                                     <thead class="bg-slate-100/70 text-slate-600 border-b border-slate-200">
                                         <tr>
-                                            <th class="p-3">Date ↕</th>
-                                            <th class="p-3">Invoice no ↕</th>
-                                            <th class="p-3">Party Name ↕</th>
-                                            <th class="p-3">Transaction ↕</th>
-                                            <th class="p-3">Payment Type ↕</th>
-                                            <th class="p-3 text-right">Amount ↕</th>
-                                            <th class="p-3 text-right">Balance ↕</th>
-                                            <th class="p-3">Due date ↕</th>
-                                            <th class="p-3 text-center">Status ↕</th>
+                                            <th class="p-3">Date</th>
+                                            <th class="p-3">Invoice No</th>
+                                            <th class="p-3">Party Name</th>
+                                            <th class="p-3">Payment Type</th>
+                                            <th class="p-3 text-right">Amount</th>
+                                            <th class="p-3 text-right">Balance</th>
+                                            <th class="p-3 text-center">Status</th>
                                             <th class="p-3 text-center">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="saleTableBody" class="divide-y divide-slate-200 text-slate-700">
-                                        <tr class="hover:bg-slate-50/80 transition">
+                                    <tbody class="divide-y divide-slate-200 text-slate-700">
+                                        <tr>
                                             <td class="p-3">22/07/2026</td>
                                             <td class="p-3 font-mono font-medium">NT/26-27/2432</td>
                                             <td class="p-3 font-semibold text-slate-900">920-Sthirah</td>
-                                            <td class="p-3">Sale</td>
                                             <td class="p-3">Cash</td>
                                             <td class="p-3 text-right font-medium">₹ 191</td>
                                             <td class="p-3 text-right font-medium">₹ 191</td>
-                                            <td class="p-3">29/07/2026</td>
                                             <td class="p-3 text-center"><span class="px-2 py-0.5 bg-rose-50 text-rose-600 font-semibold rounded text-[11px]">Unpaid</span></td>
                                             <td class="p-3 text-center flex items-center justify-center gap-2">
                                                 <button onclick="printSingleInvoice('NT/26-27/2432', '920-Sthirah', '₹ 191', 'Unpaid')" title="Print Invoice" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="printer" class="w-4 h-4"></i></button>
-                                                <button onclick="alert('Sharing invoice via WhatsApp/Email')" title="Share" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="share-2" class="w-4 h-4"></i></button>
-                                                <div class="relative inline-block text-left">
-                                                    <button onclick="toggleActionDropdown('dropdown-1')" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
-                                                    <div id="dropdown-1" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-xl z-50 text-left py-1">
-                                                        <a href="#" onclick="editInvoice('NT/26-27/2432', '920-Sthirah', '₹ 191')" class="block px-4 py-2 hover:bg-slate-100 text-xs font-medium text-slate-700">View/Edit</a>
-                                                        <a href="#" onclick="alert('e-Invoice generated!')" class="block px-4 py-2 hover:bg-slate-100 text-xs font-medium text-slate-700">Generate e-Invoice</a>
-                                                        <a href="#" onclick="receivePayment('NT/26-27/2432', '₹ 191')" class="block px-4 py-2 hover:bg-slate-100 text-xs font-medium text-emerald-600 font-semibold">Receive Payment</a>
-                                                        <a href="#" onclick="printSingleInvoice('NT/26-27/2432', '920-Sthirah', '₹ 191', 'Unpaid')" class="block px-4 py-2 hover:bg-slate-100 text-xs font-medium text-slate-700">Print</a>
-                                                        <a href="#" onclick="alert('Viewing invoice audit history')" class="block px-4 py-2 hover:bg-slate-100 text-xs font-medium text-slate-700">View History</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50/80 transition">
-                                            <td class="p-3">22/07/2026</td>
-                                            <td class="p-3 font-mono font-medium">NT/26-27/2431</td>
-                                            <td class="p-3 font-semibold text-slate-900">903-R.K Samosa</td>
-                                            <td class="p-3">Sale</td>
-                                            <td class="p-3">Cash</td>
-                                            <td class="p-3 text-right font-medium">₹ 7,050</td>
-                                            <td class="p-3 text-right font-medium">₹ 0</td>
-                                            <td class="p-3">22/07/2026</td>
-                                            <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 font-semibold rounded text-[11px]">Paid</span></td>
-                                            <td class="p-3 text-center flex items-center justify-center gap-2">
-                                                <button onclick="printSingleInvoice('NT/26-27/2431', '903-R.K Samosa', '₹ 7,050', 'Paid')" title="Print Invoice" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="printer" class="w-4 h-4"></i></button>
-                                                <button onclick="alert('Sharing invoice')" title="Share" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="share-2" class="w-4 h-4"></i></button>
-                                                <button onclick="editInvoice('NT/26-27/2431', '903-R.K Samosa', '₹ 7,050')" title="View/Edit" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                                                <button onclick="editInvoice('NT/26-27/2432', '920-Sthirah', '₹ 191')" title="View/Edit Invoice" class="p-1 hover:bg-slate-200 rounded text-slate-600"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -430,26 +347,27 @@
                         </div>
                     </section>
 
-                    <!-- ================= PURCHASE BILLS & PAYMENT TRACKING SECTION ================= -->
+                    <!-- ================= PURCHASE BILLS ================= -->
                     <section id="sec-purchase-bills" class="app-section space-y-6 hidden">
                         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
                             <div class="flex flex-wrap items-center gap-3 text-sm">
-                                <span class="font-semibold text-slate-700">Filter by Date Range :</span>
-                                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs">
+                                <span class="font-semibold text-slate-700">Filter by Date (Calendar):</span>
+                                <div class="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs">
                                     <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-500"></i>
-                                    <input type="date" value="2026-07-01" class="bg-transparent text-xs outline-none">
+                                    <input type="date" value="2026-07-01" class="bg-transparent text-xs outline-none font-medium">
                                     <span>To</span>
-                                    <input type="date" value="2026-07-31" class="bg-transparent text-xs outline-none">
+                                    <input type="date" value="2026-07-31" class="bg-transparent text-xs outline-none font-medium">
                                 </div>
+                                <button onclick="alert('Filtered purchase bills by date!')" class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-semibold">Apply Date</button>
                             </div>
-                            <button onclick="alert('New Purchase Bill Recorded')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
+                            <button onclick="alert('Add Purchase Bill')" id="purchaseActionBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
                                 <i data-lucide="plus" class="w-4 h-4"></i> Add Purchase Bill
                             </button>
                         </div>
 
                         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-                                <h3 class="font-bold text-slate-800 text-sm">Purchase Bills & Payment Linking Menu</h3>
+                                <h3 class="font-bold text-slate-800 text-sm">Purchase Bills & Payment Tracking</h3>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-xs border-collapse">
@@ -461,7 +379,7 @@
                                             <th class="p-3">Payment Mode</th>
                                             <th class="p-3 text-right">Bill Amount</th>
                                             <th class="p-3 text-right">Balance Due</th>
-                                            <th class="p-3 text-center">Payment Status</th>
+                                            <th class="p-3 text-center">Status</th>
                                             <th class="p-3 text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -484,7 +402,37 @@
                         </div>
                     </section>
 
-                    <!-- ALL OTHER MENU PLACEHOLDERS TO PRESERVE COMPREHENSIVE ACCESS -->
+                    <!-- ================= SOFTWARE COLOR THEME SETTING ================= -->
+                    <section id="sec-set-theme" class="app-section space-y-6 hidden">
+                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6 max-w-xl">
+                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Customize Software Color Theme</h3>
+                            <p class="text-sm text-slate-500">Choose your preferred theme. This will automatically update the sidebar navigation panel background, text tones, and primary buttons.</p>
+                            
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <button onclick="changeSoftwareTheme('indigo', 'bg-indigo-950', 'text-slate-300', 'bg-indigo-600', 'hover:bg-indigo-700', 'bg-indigo-100 text-indigo-700')" class="p-4 border-2 rounded-xl flex flex-col items-center gap-2 border-indigo-600 bg-indigo-50">
+                                    <span class="w-8 h-8 rounded-full bg-indigo-600 block"></span>
+                                    <span class="text-xs font-semibold text-indigo-900">Indigo Dark</span>
+                                </button>
+                                <button onclick="changeSoftwareTheme('emerald', 'bg-emerald-950', 'text-slate-300', 'bg-emerald-600', 'hover:bg-emerald-700', 'bg-emerald-100 text-emerald-700')" class="p-4 border-2 rounded-xl flex flex-col items-center gap-2 border-slate-200 hover:border-emerald-500">
+                                    <span class="w-8 h-8 rounded-full bg-emerald-600 block"></span>
+                                    <span class="text-xs font-semibold text-slate-700">Emerald Dark</span>
+                                </button>
+                                <button onclick="changeSoftwareTheme('rose', 'bg-slate-900', 'text-rose-200', 'bg-rose-600', 'hover:bg-rose-700', 'bg-rose-100 text-rose-700')" class="p-4 border-2 rounded-xl flex flex-col items-center gap-2 border-slate-200 hover:border-rose-500">
+                                    <span class="w-8 h-8 rounded-full bg-rose-600 block"></span>
+                                    <span class="text-xs font-semibold text-slate-700">Rose Dark</span>
+                                </button>
+                                <button onclick="changeSoftwareTheme('amber', 'bg-stone-900', 'text-amber-200', 'bg-amber-600', 'hover:bg-amber-700', 'bg-amber-100 text-amber-700')" class="p-4 border-2 rounded-xl flex flex-col items-center gap-2 border-slate-200 hover:border-amber-500">
+                                    <span class="w-8 h-8 rounded-full bg-amber-600 block"></span>
+                                    <span class="text-xs font-semibold text-slate-700">Amber Dark</span>
+                                </button>
+                            </div>
+                            <div class="flex justify-end pt-4 border-t">
+                                <button onclick="alert('Software theme applied!')" class="px-5 py-2.5 bg-slate-900 text-white rounded-lg text-sm font-semibold">Save Theme Choice</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- OTHER MENUS FOR COMPLETENESS -->
                     <section id="sec-parties-all" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">All Parties</h3></div></section>
                     <section id="sec-parties-add" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Add Party</h3></div></section>
                     <section id="sec-items-list" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Item List & Stock</h3></div></section>
@@ -501,80 +449,16 @@
                     <section id="sec-acc-journal" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Journal Entries</h3></div></section>
                     <section id="sec-acc-chart" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Chart of Accounts</h3></div></section>
                     <section id="sec-acc-statements" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Account Statements</h3></div></section>
-                    
-                    <!-- Reports & GST Sections -->
-                    <section id="sec-rep-daybook" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Day Book Report</h3></div></section>
-                    <section id="sec-rep-alltxn" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">All Transactions Report</h3></div></section>
+                    <section id="sec-rep-daybook" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Day Book Report (With Calendar Filter)</h3><div class="flex gap-2 pt-2"><input type="date" class="border p-2 rounded text-sm"><input type="date" class="border p-2 rounded text-sm"><button class="bg-slate-800 text-white px-3 py-1.5 rounded text-xs">Filter Date</button></div></div></section>
                     <section id="sec-rep-pl" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Profit and Loss Statement</h3></div></section>
-                    <section id="sec-rep-cashflow" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Cash Flow Report</h3></div></section>
-                    <section id="sec-rep-balancesheet" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Balance Sheet</h3></div></section>
-                    <section id="sec-rep-partystatement" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Party Statement</h3></div></section>
-                    <section id="sec-rep-allparties" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">All Parties Report</h3></div></section>
-                    <section id="sec-rep-gstr1" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">GSTR 1 Report</h3></div></section>
-                    <section id="sec-rep-gstr2" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">GSTR 2 Report</h3></div></section>
                     <section id="sec-rep-gstr3b" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">GSTR 3B Summary</h3></div></section>
-                    <section id="sec-rep-gstr9" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">GSTR 9 Annual Return</h3></div></section>
-                    <section id="sec-rep-hsn" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Sale Summary By HSN</h3></div></section>
-                    <section id="sec-rep-sac" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">SAC Report</h3></div></section>
-
-                    <!-- Sync & Utilities -->
                     <section id="sec-sync-activity" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">User Activity Table</h3></div></section>
                     <section id="sec-sync-restore" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Restore Backup</h3></div></section>
                     <section id="sec-util-import" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Import Items</h3></div></section>
                     <section id="sec-util-barcode" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Barcode Generator</h3></div></section>
-                    <section id="sec-util-bulk" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Update Items In Bulk</h3></div></section>
-                    <section id="sec-util-tallyimport" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Import From Tally</h3></div></section>
-                    <section id="sec-util-parties" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Import Parties</h3></div></section>
-                    <section id="sec-util-verify" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Verify My Data</h3></div></section>
                     <section id="sec-util-recycle" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Recycle Bin</h3></div></section>
-
-                    <!-- ================= PRINT & INVOICE DESIGN CUSTOMIZER ================= -->
-                    <section id="sec-set-print" class="app-section space-y-6 hidden">
-                        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6 max-w-3xl">
-                            <h3 class="text-lg font-bold text-slate-800 border-b pb-4">Customize Invoice Print & Design Layouts</h3>
-                            <p class="text-sm text-slate-500">Configure your invoice design templates, including integrated UPI QR codes, bank details, and digital signatures.</p>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="border-2 border-indigo-600 p-4 rounded-xl cursor-pointer bg-indigo-50/50">
-                                    <h4 class="font-bold text-slate-900 text-sm">GST Classic Theme 1</h4>
-                                    <p class="text-xs text-slate-500 mt-1">Standard structured table with formal tax itemization columns.</p>
-                                    <span class="text-xs text-indigo-600 font-semibold mt-3 inline-block">Active Theme</span>
-                                </div>
-                                <div class="border border-slate-200 p-4 rounded-xl cursor-pointer hover:border-slate-400">
-                                    <h4 class="font-bold text-slate-900 text-sm">Modern Minimal Theme 2</h4>
-                                    <p class="text-xs text-slate-500 mt-1">Clean white layout optimized for thermal and A4 printers.</p>
-                                    <span class="text-xs text-slate-500 font-semibold mt-3 inline-block">Select Theme</span>
-                                </div>
-                                <div class="border border-slate-200 p-4 rounded-xl cursor-pointer hover:border-slate-400">
-                                    <h4 class="font-bold text-slate-900 text-sm">Compact POS Theme 3</h4>
-                                    <p class="text-xs text-slate-500 mt-1">Condensed receipt style with prominent UPI QR display.</p>
-                                    <span class="text-xs text-slate-500 font-semibold mt-3 inline-block">Select Theme</span>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4 pt-2">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Invoice Header Notes / Terms</label>
-                                    <textarea rows="2" class="w-full p-2 border rounded text-sm">Thanks for doing business with UBIT Technologiez!</textarea>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Print Elements Toggle</label>
-                                    <div class="space-y-1.5 text-xs pt-1">
-                                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded text-indigo-600"> Print Bank Details on Invoice</label>
-                                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded text-indigo-600"> Generate & Print UPI QR Code</label>
-                                        <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded text-indigo-600"> Print Digital Signature</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end"><button onclick="alert('Print invoice design settings saved successfully!')" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700">Save Print Design</button></div>
-                        </div>
-                    </section>
-
+                    <section id="sec-set-print" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Print & Invoice Design</h3></div></section>
                     <section id="sec-set-general" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">General Settings</h3></div></section>
-                    <section id="sec-set-transaction" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Transaction & Prefixes</h3></div></section>
-                    <section id="sec-set-gst" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Taxes & GST</h3></div></section>
-                    <section id="sec-set-item" class="app-section space-y-4 hidden"><div class="bg-white p-6 rounded-xl border"><h3 class="font-bold text-lg">Item Fields & Batch</h3></div></section>
 
                 </div>
             </main>
@@ -582,44 +466,13 @@
 
     </div>
 
-    <!-- MODAL FOR EDITING / CREATING INVOICES -->
-    <div id="invoiceModal" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="modalTitle" class="font-bold text-slate-900 text-lg">Edit Sale Invoice</h3>
-                <button onclick="closeInvoiceModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Invoice Number</label>
-                    <input type="text" id="modalInvNo" class="w-full p-2 border rounded font-mono text-sm" value="NT/26-27/2432">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Party Name</label>
-                    <input type="text" id="modalParty" class="w-full p-2 border rounded text-sm" value="920-Sthirah">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Amount (₹)</label>
-                    <input type="text" id="modalAmount" class="w-full p-2 border rounded text-sm" value="₹ 191">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Payment Status / Linking</label>
-                    <select id="modalStatus" class="w-full p-2 border rounded text-sm">
-                        <option value="Unpaid">Unpaid (Pending)</option>
-                        <option value="Paid">Paid & Linked</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button onclick="closeInvoiceModal()" class="px-4 py-2 border rounded text-xs font-medium">Cancel</button>
-                <button onclick="saveInvoiceChanges()" class="px-4 py-2 bg-indigo-600 text-white rounded text-xs font-semibold hover:bg-indigo-700">Save Invoice Updates</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script Interactions -->
+    <!-- SCRIPT INTERACTION -->
     <script>
         lucide.createIcons();
+
+        let currentThemeColor = 'indigo';
+        let currentSidebarBg = 'bg-slate-900';
+        let currentSidebarText = 'text-slate-300';
 
         function toggleOtpField() {
             const container = document.getElementById('otpContainer');
@@ -658,18 +511,25 @@
             if (target) target.classList.remove('hidden');
             
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white', 'font-medium');
+                btn.classList.remove('bg-indigo-600', 'bg-emerald-600', 'bg-rose-600', 'bg-amber-600', 'text-white', 'font-medium');
+                btn.classList.add(currentSidebarText);
                 if (btn.getAttribute('data-target') === targetId) {
-                    btn.classList.add('bg-indigo-600', 'text-white', 'font-medium');
+                    btn.classList.remove(currentSidebarText);
+                    btn.classList.add('text-white', 'font-medium');
+                    if (currentThemeColor === 'indigo') btn.classList.add('bg-indigo-600');
+                    if (currentThemeColor === 'emerald') btn.classList.add('bg-emerald-600');
+                    if (currentThemeColor === 'rose') btn.classList.add('bg-rose-600');
+                    if (currentThemeColor === 'amber') btn.classList.add('bg-amber-600');
                 }
             });
 
             const titleMap = {
                 'home': 'Home Dashboard',
                 'sale-invoice': 'Sale Invoices',
-                'purchase-bills': 'Purchase Bills & Payment Tracking',
-                'set-print': 'Print & Invoice Design Customizer',
-                'set-general': 'General Business Settings',
+                'purchase-bills': 'Purchase Bills',
+                'set-theme': 'Software Color Theme Customizer',
+                'set-print': 'Print & Invoice Design',
+                'set-general': 'General Settings',
                 'parties-all': 'All Parties',
                 'parties-add': 'Add Party',
                 'items-list': 'Item List & Stock',
@@ -687,71 +547,58 @@
                 'acc-chart': 'Chart of Accounts',
                 'acc-statements': 'Account Statements',
                 'rep-daybook': 'Day Book Report',
-                'rep-alltxn': 'All Transactions Report',
                 'rep-pl': 'Profit and Loss Statement',
-                'rep-cashflow': 'Cash Flow Report',
-                'rep-balancesheet': 'Balance Sheet',
-                'rep-partystatement': 'Party Statement',
-                'rep-allparties': 'All Parties Report',
-                'rep-gstr1': 'GSTR 1 Report',
-                'rep-gstr2': 'GSTR 2 Report',
                 'rep-gstr3b': 'GSTR 3B Summary',
-                'rep-gstr9': 'GSTR 9 Annual Return',
-                'rep-hsn': 'Sale Summary By HSN',
-                'rep-sac': 'SAC Report',
                 'sync-activity': 'User Activity Table',
                 'sync-restore': 'Restore Backup',
                 'util-import': 'Import Items',
                 'util-barcode': 'Barcode Generator',
-                'util-bulk': 'Update Items In Bulk',
-                'util-tallyimport': 'Import From Tally',
-                'util-parties': 'Import Parties',
-                'util-verify': 'Verify My Data',
-                'util-recycle': 'Recycle Bin',
-                'set-transaction': 'Transaction & Prefixes',
-                'set-gst': 'Taxes & GST',
-                'set-item': 'Item Fields & Batch'
+                'util-recycle': 'Recycle Bin'
             };
             document.getElementById('sectionTitle').innerText = titleMap[targetId] || 'Dashboard Panel';
         }
 
-        function toggleActionDropdown(dropdownId) {
-            const dropdown = document.getElementById(dropdownId);
-            document.querySelectorAll('[id^="dropdown-"]').forEach(d => {
-                if (d.id !== dropdownId) d.classList.add('hidden');
+        function changeSoftwareTheme(colorName, sidebarBgClass, sidebarTextClass, bgClass, hoverClass, badgeClass) {
+            currentThemeColor = colorName;
+            currentSidebarBg = sidebarBgClass;
+            currentSidebarText = sidebarTextClass;
+            
+            // Apply background & text color to sidebar navigation panel
+            const sidebar = document.getElementById('sidebarTheme');
+            if(sidebar) {
+                sidebar.className = `w-64 ${sidebarBgClass} ${sidebarTextClass} flex flex-col justify-between hidden md:flex overflow-y-auto transition-colors duration-300`;
+            }
+
+            // Update buttons & accents
+            const primaryBtn = document.getElementById('primaryActionBtn');
+            const purchaseBtn = document.getElementById('purchaseActionBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const syncBadge = document.getElementById('syncBadge');
+            const syncDot = document.getElementById('syncDot');
+            const authLogo = document.getElementById('authLogoBox');
+            const sidebarLogo = document.getElementById('sidebarLogo');
+            const headerAvatar = document.getElementById('headerAvatar');
+
+            [primaryBtn, purchaseBtn, loginBtn].forEach(btn => {
+                if(btn) {
+                    btn.className = `w-full text-white font-semibold py-3 rounded-lg transition ${bgClass} hover:${hoverClass}`;
+                    if(btn.id !== 'loginBtn') btn.className = `px-4 py-2 rounded-lg text-sm font-semibold text-white transition flex items-center gap-2 shadow-sm ${bgClass}`;
+                }
             });
-            dropdown.classList.toggle('hidden');
+
+            if(syncBadge) syncBadge.className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${badgeClass}`;
+            if(syncDot) syncDot.className = `w-2 h-2 rounded-full ${bgClass} animate-pulse`;
+            if(authLogo) authLogo.className = `inline-flex p-3 rounded-xl font-bold text-xl tracking-tight ${badgeClass}`;
+            if(sidebarLogo) sidebarLogo.className = `${bgClass} text-white font-bold p-2 rounded-lg text-sm`;
+            if(headerAvatar) headerAvatar.className = `w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${badgeClass}`;
         }
 
         function printSingleInvoice(invNo, party, amount, status) {
-            alert(`Printing Invoice [${invNo}] for ${party} (${amount}) - Status: ${status}.\nIncludes Bank Details and UPI QR Code as per Print Settings.`);
+            alert(`Printing Invoice [${invNo}] for ${party} (${amount}) - Status: ${status}.\nIncludes Bank Details and UPI QR Code.`);
         }
 
         function editInvoice(invNo, party, amount) {
-            document.getElementById('modalInvNo').value = invNo;
-            document.getElementById('modalParty').value = party;
-            document.getElementById('modalAmount').value = amount;
-            document.getElementById('invoiceModal').classList.remove('hidden');
-        }
-
-        function openNewInvoiceModal() {
-            document.getElementById('modalInvNo').value = 'NT/26-27/2433';
-            document.getElementById('modalParty').value = 'New Customer';
-            document.getElementById('modalAmount').value = '₹ 0.00';
-            document.getElementById('invoiceModal').classList.remove('hidden');
-        }
-
-        function closeInvoiceModal() {
-            document.getElementById('invoiceModal').classList.add('hidden');
-        }
-
-        function saveInvoiceChanges() {
-            alert('Invoice updated successfully and synced with Google Drive backup!');
-            closeInvoiceModal();
-        }
-
-        function receivePayment(invNo, amount) {
-            alert(`Payment received for Invoice ${invNo} amounting to ${amount}.\nLinked successfully to payment tracking menu!`);
+            alert(`Opening invoice ${invNo} for ${party} (${amount}) in editor mode.`);
         }
     </script>
 </body>
